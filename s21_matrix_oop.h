@@ -6,17 +6,17 @@ public:
     S21Matrix(); // tested
     S21Matrix(int rows, int cols); // tested
     S21Matrix(const S21Matrix &other); //tested
-    S21Matrix(S21Matrix&& other) noexcept; //tested
+    S21Matrix(S21Matrix &&other) noexcept; //tested
 
-    int GetRows() const; // tested
-    int GetCols() const; // tested
+    [[nodiscard]] int GetRows() const; // tested
+    [[nodiscard]] int GetCols() const; // tested
 
     bool EqMatrix(const S21Matrix &other); //tested
     void SumMatrix(const S21Matrix &other);//tested
     void SubMatrix(const S21Matrix &other);//tested
-    void MulNumber(const double num); // tested
-    void MulMatrix(const S21Matrix& other); //tested
-    S21Matrix Transpose();
+    void MulNumber(double num); // tested
+    void MulMatrix(const S21Matrix &other); //tested
+//    S21Matrix Transpose();
 
     double &operator()(int i, int j) const; // tested
     double &operator()(int i, int j); // override tested
@@ -25,10 +25,13 @@ public:
     bool operator==(const S21Matrix &other); //tested
     S21Matrix &operator+=(const S21Matrix &other); //tested
     S21Matrix &operator-=(const S21Matrix &other); // tested
-    S21Matrix operator=(const S21Matrix& other);// tested
-    S21Matrix& operator=(S21Matrix&& other); //tested
-    S21Matrix& operator*(S21Matrix&& other);
-    S21Matrix& operator*=(S21Matrix&& other);
+    S21Matrix& operator=(const S21Matrix &other);// tested
+    S21Matrix &operator=(S21Matrix &&other) noexcept; //tested
+    S21Matrix operator*(const S21Matrix &other); // tested
+    S21Matrix operator*(double num); // tested
+    S21Matrix &operator*=(const S21Matrix &other); // tested
+    S21Matrix &operator*=(double num); //tested
+    friend S21Matrix operator*(double num, const S21Matrix &other) noexcept; // tested
 
     ~S21Matrix(); //tested
 private:
@@ -41,7 +44,7 @@ private:
 
     void Blank();
 
-    void Arithmetic(const S21Matrix &other, const int sign);
+    void Arithmetic(const S21Matrix &other, int sign);
 
     bool NonEqualitySizeCheck(const S21Matrix &other);
 
@@ -58,8 +61,10 @@ S21Matrix InverseMatrix()
  set_rows();
  set_cols();
 
-*
-*=
+
+
+* // done
+*= // done
 void MulNumber(const double num) // done
 void MulMatrix(const S21Matrix& other) // done
 void SubMatrix(const S21Matrix& other)

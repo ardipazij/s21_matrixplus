@@ -212,7 +212,48 @@ TEST(OverrideMethods, EqualToCopyConstructor){
     EXPECT_EQ(res == example, 1);
 }
 
+TEST(OverrideMethods, MulMatrixUno){
+    S21Matrix example(3,3);
+    S21Matrix term(3,4);
+    S21Matrix result(3,4);
+    S21Matrix answer;
+    setMatrix3x3(example, mulMatrixFirstValue);
+    setMatrix3x4(term, mulMatrixSecondValue);
+    setMatrix3x4(result, mulMatrixResult);
+    answer = example * term;
+    EXPECT_EQ(answer.EqMatrix(result), true);
+}
+TEST(OverrideMethods, MulMatrixMono){
+    S21Matrix example(3,3);
+    S21Matrix term(3,4);
+    S21Matrix result(3,4);
+    setMatrix3x3(example, mulMatrixFirstValue);
+    setMatrix3x4(term, mulMatrixSecondValue);
+    setMatrix3x4(result, mulMatrixResult);
+    example *= term;
+    EXPECT_EQ(example.EqMatrix(result), true);
+}
 
+TEST(OverrideMethods, MulNumberUnoLeft){
+    S21Matrix example(1,1);
+    example(0,0) = 4;
+    example = example * 5;
+    EXPECT_EQ(example(0,0), 20);
+}
+
+TEST(OverrideMethods, MulNumberUnoRight){
+    S21Matrix example(1,1);
+    example(0,0) = 4;
+    example = 5 * example;
+    EXPECT_EQ(example(0,0), 20);
+}
+
+TEST(OverrideMethods, MulNumberMono){
+    S21Matrix example(1,1);
+    example(0,0) = 4;
+    example *= 5;
+    EXPECT_EQ(example(0,0), 20);
+}
 
 void setMatrix3x3(S21Matrix& matrix, double expected[3][3]) {
     for (int i = 0; i < matrix.GetRows(); ++i) {

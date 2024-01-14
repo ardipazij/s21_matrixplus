@@ -16,29 +16,20 @@ S21Matrix::S21Matrix(const S21Matrix &other) : S21Matrix(other.rows_, other.cols
     CopyMatrix(other);
 }
 
-S21Matrix::S21Matrix(S21Matrix &&other)
-
-noexcept:
-rows_(other
-.rows_),
-cols_(other
-.cols_),
-matrix_(other
-.matrix_) {
-other.
-
-Blank();
-
+S21Matrix::S21Matrix(S21Matrix &&other) noexcept: rows_(other.rows_),
+                                                  cols_(other.cols_),
+                                                  matrix_(other.matrix_) {
+    other.Blank();
 }
 
 S21Matrix::~S21Matrix() { DestroyMatrix(); }
 
 // accessors and mutators
-int S21Matrix::GetCols() const {
+[[nodiscard]] int S21Matrix::GetCols() const {
     return cols_;
 }
 
-int S21Matrix::GetRows() const {
+[[nodiscard]] int S21Matrix::GetRows() const {
     return rows_;
 }
 
@@ -137,7 +128,7 @@ S21Matrix &S21Matrix::operator-=(const S21Matrix &other) {
     return (*this);
 }
 
-S21Matrix S21Matrix::operator=(const S21Matrix &other) {
+S21Matrix& S21Matrix::operator=(const S21Matrix &other) {
     if (this != &other) {
         DestroyMatrix();
         rows_ = other.rows_;
@@ -148,7 +139,7 @@ S21Matrix S21Matrix::operator=(const S21Matrix &other) {
     return *this;
 }
 
-S21Matrix &S21Matrix::operator=(S21Matrix &&other) {
+S21Matrix &S21Matrix::operator=(S21Matrix &&other) noexcept {
     if (this != &other) {
         DestroyMatrix();
         rows_ = other.rows_;
@@ -158,17 +149,30 @@ S21Matrix &S21Matrix::operator=(S21Matrix &&other) {
     }
     return *this;
 }
-//const double num
-//S21Matrix& operator*(S21Matrix&& other){
-//    S21Matrix result(*this);
-//    result.MulMatrix(other);
-//    return result;
-//}
-//S21Matrix& operator*=(S21Matrix&& other){
-//    S21Matrix result(*this);
-//    result.MulNumber(other);
-//    return result;
-//}
+S21Matrix S21Matrix::operator*(const S21Matrix &other){
+    S21Matrix result(*this);
+    result.MulMatrix(other);
+    return result;
+}
+
+S21Matrix S21Matrix::operator*(double num){
+    S21Matrix result(*this);
+    result.MulNumber(num);
+    return result;
+}
+S21Matrix &S21Matrix::operator*=(const S21Matrix &other){
+    MulMatrix(other);
+    return (*this);
+}
+S21Matrix &S21Matrix::operator*=(double num){
+    MulNumber(num);
+    return (*this);
+}
+S21Matrix operator*(double num, const S21Matrix &other) noexcept {
+    S21Matrix result(other);
+    result.MulNumber(num);
+    return result;
+}
 
 // helpers
 void S21Matrix::MemoryAllocation() {
@@ -193,7 +197,7 @@ void S21Matrix::DestroyMatrix() {
     }
 }
 
-void S21Matrix::Arithmetic(const S21Matrix &other, const int sign) {
+void S21Matrix::Arithmetic(const S21Matrix &other, int sign) {
     for (int i = 0; i < rows_; i++) {
         for (int j = 0; j < cols_; j++) {
             matrix_[i][j] = matrix_[i][j] + sign * other(i, j);
