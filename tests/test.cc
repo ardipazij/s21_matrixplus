@@ -1,0 +1,235 @@
+#include "test.h"
+
+
+TEST(CreateTest, DefaultConstructor) {
+    S21Matrix example;
+    EXPECT_EQ(example.GetRows(), 0);
+    EXPECT_EQ(example.GetCols(), 0);
+}
+
+TEST(CreateTest, ParametrizedConstructorSuccess) {
+    S21Matrix example(1,1);
+    EXPECT_EQ(example.GetRows(), 1);
+    EXPECT_EQ(example.GetCols(), 1);
+    EXPECT_EQ(example(0,0), 0);
+}
+
+TEST(CreateTest, CopyConstructor){
+    S21Matrix example(3,3);
+    S21Matrix res(example);
+    EXPECT_EQ(res.GetCols(), example.GetCols());
+}
+
+TEST(CreateTest, MovedConstructor){
+    S21Matrix example(3,3);
+    S21Matrix res = std::move(example);
+    EXPECT_EQ(res.GetCols(), 3);
+    EXPECT_EQ(example.GetCols(), 0);
+}
+
+TEST(CreateTest, ParametrizedConstructorFailure) {
+    EXPECT_THROW(S21Matrix example(-1,1), std::out_of_range);
+}
+
+TEST(OverrideOperators, Brackets){
+    S21Matrix example(1,1);
+    EXPECT_EQ(example(0,0), 0);
+}
+TEST(OverrideOperators, BracketsOverride){
+    S21Matrix example(1,1);
+    example(0,0) = 5;
+    EXPECT_EQ(example(0,0), 5);
+}
+
+TEST(OverrideOperators, BracketsOutOfRange){
+    S21Matrix example(1,1);
+    EXPECT_THROW(example(-5,4), std::out_of_range);
+}
+
+TEST(OverrideOperators, BracketsOverrideOutOfRange){
+    S21Matrix example(1,1);
+    EXPECT_THROW(example(5,0) = 4, std::out_of_range);
+}
+
+
+
+TEST(TestPrivateAccess, Accessors){
+    S21Matrix example(1, 2);
+    EXPECT_EQ(example.GetRows(), 1);
+    EXPECT_EQ(example.GetCols(), 2);
+}
+
+//TEST(TestPrivateAccess, Mutators){
+//    S21Matrix example(1, 2);
+//    EXPECT_EQ(example.GetRows(), 1);
+//    EXPECT_EQ(example.GetCols(), 2);
+//}
+
+TEST(BaseFunctions, EqualOutOfRange){
+    S21Matrix example(3,3);
+    S21Matrix out_of_range_example(3,4);
+    EXPECT_THROW(example.EqMatrix(out_of_range_example), std::out_of_range);
+}
+
+TEST(BaseFunctions, EqualTrue){
+    S21Matrix example(3,3);
+    S21Matrix equal_example(3,3);
+    EXPECT_EQ(example.EqMatrix(equal_example), 1);
+}
+
+TEST(BaseFunctions, EqualFalse){
+    S21Matrix example(3,3);
+    S21Matrix non_equal_example(3,3);
+    non_equal_example(1,1) = 3;
+    EXPECT_EQ(example.EqMatrix(non_equal_example), 0);
+}
+
+TEST(BaseFunctions, SumOutOfRange){
+    S21Matrix example(3,3);
+    S21Matrix non_equal_example(3,4);
+    EXPECT_THROW(example.SumMatrix(non_equal_example), std::out_of_range);
+}
+
+TEST(BaseFunctions, SumDefaultTest){
+    for(int i = 0; i < 2; ++i){
+        S21Matrix example(3,3);
+        S21Matrix summand(3,3);
+        S21Matrix result(3,3);
+        setMatrix3x3(example, summandFirst[i]);
+        setMatrix3x3(summand, summandSecond[i]);
+        setMatrix3x3(result, sumResult[i]);
+        example.SumMatrix(summand);
+        EXPECT_EQ(result.EqMatrix(example), compareSumResult[i]);
+    }
+
+}
+
+TEST(BaseFunctions, SubOutOfRange){
+    S21Matrix example(3,3);
+    S21Matrix non_equal_example(3,4);
+    EXPECT_THROW(example.SubMatrix(non_equal_example), std::out_of_range);
+}
+
+TEST(BaseFunctions, SubDefaultTest){
+    for(int i = 0; i < 2; ++i){
+        S21Matrix example(3,3);
+        S21Matrix term(3,3);
+        S21Matrix result(3,3);
+        setMatrix3x3(example, minuend[i]);
+        setMatrix3x3(term, subtrahend[i]);
+        setMatrix3x3(result, subResult[i]);
+        example.SubMatrix(term);
+        EXPECT_EQ(result.EqMatrix(example), compareSubResult[i]);
+    }
+}
+
+TEST(BaseFunctions, MulNumberTest){
+    S21Matrix example(1,1);
+    example(0,0) = 5;
+    example.MulNumber(4);
+    EXPECT_EQ(example(0,0), 20);
+}
+
+TEST(BaseFunctions, MulMatrixTest){
+    S21Matrix example(3,3);
+    S21Matrix term(3,4);
+    S21Matrix result(3,4);
+    setMatrix3x3(example, mulMatrixFirstValue);
+    setMatrix3x4(term, mulMatrixSecondValue);
+    setMatrix3x4(result, mulMatrixResult);
+    example.MulMatrix(term);
+    EXPECT_EQ(result.EqMatrix(example), true);
+}
+
+TEST(BaseFunctions, MulMatrixOutOfRangeTest){
+    S21Matrix example(3,3);
+    S21Matrix term(5,4);
+    EXPECT_THROW(example.MulMatrix(term), std::out_of_range);
+}
+
+TEST(OverrideMethods, PlusUno){
+    S21Matrix example(3,3);
+    S21Matrix summand(3,3);
+    S21Matrix result(3,3);
+    setMatrix3x3(example, summandFirst[0]);
+    setMatrix3x3(summand, summandSecond[0]);
+    setMatrix3x3(result, sumResult[0]);
+    example += summand;
+    EXPECT_EQ(example.EqMatrix(result), compareSumResult[0]);
+}
+
+TEST(OverrideMethods, MinusUno){
+    S21Matrix example(3,3);
+    S21Matrix summand(3,3);
+    S21Matrix result(3,3);
+    setMatrix3x3(example, minuend[0]);
+    setMatrix3x3(summand, subtrahend[0]);
+    setMatrix3x3(result, subResult[0]);
+    example -= summand;
+    EXPECT_EQ(example.EqMatrix(result), compareSubResult[0]);
+}
+TEST(OverrideMethods, EqualUnoTrue){
+    S21Matrix example(3,3);
+    S21Matrix equal_example(3,3);
+    EXPECT_EQ(example == equal_example, 1);
+}
+
+TEST(OverrideMethods, EqualUnoFalse){
+    S21Matrix example(3,3);
+    S21Matrix non_equal_example(3,3);
+    non_equal_example(1,1) = 3;
+    EXPECT_EQ(example == non_equal_example, 0);
+}
+
+TEST(OverrideMethods, PlusBiAndEqualToMovedConstructor){
+    S21Matrix example(3,3);
+    S21Matrix summand(3,3);
+    S21Matrix result(3,3);
+    S21Matrix res;
+    setMatrix3x3(example, summandFirst[0]);
+    setMatrix3x3(summand, summandSecond[0]);
+    setMatrix3x3(result, sumResult[0]);
+    res = summand + example;
+    EXPECT_EQ(res == result, compareSumResult[0]);
+}
+
+TEST(OverrideMethods, MinusBiAndEqualToMovedConstructor){
+    S21Matrix example(3,3);
+    S21Matrix summand(3,3);
+    S21Matrix result(3,3);
+    S21Matrix res;
+    setMatrix3x3(example, minuend[0]);
+    setMatrix3x3(summand, subtrahend[0]);
+    setMatrix3x3(result, subResult[0]);
+    res = example - summand;
+    EXPECT_EQ(res == result, compareSubResult[0]);
+}
+TEST(OverrideMethods, EqualToCopyConstructor){
+    S21Matrix example(3,3);
+    S21Matrix res;
+    setMatrix3x3(example, minuend[0]);
+    res = example;
+    EXPECT_EQ(res == example, 1);
+}
+
+
+
+void setMatrix3x3(S21Matrix& matrix, double expected[3][3]) {
+    for (int i = 0; i < matrix.GetRows(); ++i) {
+        for (int j = 0; j < matrix.GetCols(); ++j) {
+            matrix(i, j) = expected[i][j];
+        }
+    }
+}
+void setMatrix3x4(S21Matrix& matrix, double expected[3][4]){
+    for (int i = 0; i < matrix.GetRows(); ++i) {
+        for (int j = 0; j < matrix.GetCols(); ++j) {
+            matrix(i, j) = expected[i][j];
+        }
+    }
+}
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
