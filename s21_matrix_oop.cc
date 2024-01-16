@@ -88,6 +88,50 @@ void S21Matrix::MulMatrix(const S21Matrix &other) {
     *this = result;
 }
 
+S21Matrix S21Matrix::Transpose() {
+    S21Matrix result(cols_, rows_);
+    for (int i = 0; i < rows_; ++i) {
+        for (int j = 0; j < cols_; ++j) {
+            result.matrix_[j][i] = matrix_[i][j];
+        }
+    }
+    return result;
+}
+
+[[nodiscard]] double S21Matrix::Determinant() {
+    if (rows_ != cols_) {
+        throw std::out_of_range("Size of rows and cols must be equal");
+    }
+    double result = 1;
+    for (int row{0}; row < rows_; ++row) {
+        int pivot_row = row;
+        for (int next_row{row + 1}; next_row < rows_; ++next_row) {
+            if (std::abs(matrix_[next_row][row]) > std::abs(matrix_[pivot_row][row])) pivot_row = next_row;
+
+        }
+        if (std::abs(matrix_[pivot_row][row]) < 1E-11) {
+            result = 0;
+            return result;
+        }
+
+        std::swap(matrix_[row], matrix_[pivot_row]);
+
+        if (row != pivot_row)
+            result*= -1;
+
+        result *= matrix_[row][row];
+
+        for (int next_col = row + 1; next_col < rows_; ++next_col)
+            matrix_[row][next_col] /= matrix_[row][row];
+
+        for (int other_row = 0; other_row < rows_; ++other_row)
+            if (other_row != row && abs(matrix_[other_row][row]) > 1E-11)
+                for (int next_col = row + 1; next_col < rows_; ++next_col)
+                    matrix_[other_row][next_col] -= matrix_[row][next_col] * matrix_[other_row][row];
+    }
+    return result;
+}
+
 //override methods
 double &S21Matrix::operator()(int i, int j) const {
     if (i < 0 || j < 0 || i > rows_ - 1 || j > cols_ - 1)
@@ -128,7 +172,7 @@ S21Matrix &S21Matrix::operator-=(const S21Matrix &other) {
     return (*this);
 }
 
-S21Matrix& S21Matrix::operator=(const S21Matrix &other) {
+S21Matrix &S21Matrix::operator=(const S21Matrix &other) {
     if (this != &other) {
         DestroyMatrix();
         rows_ = other.rows_;
@@ -149,25 +193,29 @@ S21Matrix &S21Matrix::operator=(S21Matrix &&other) noexcept {
     }
     return *this;
 }
-S21Matrix S21Matrix::operator*(const S21Matrix &other){
+
+S21Matrix S21Matrix::operator*(const S21Matrix &other) {
     S21Matrix result(*this);
     result.MulMatrix(other);
     return result;
 }
 
-S21Matrix S21Matrix::operator*(double num){
+S21Matrix S21Matrix::operator*(double num) {
     S21Matrix result(*this);
     result.MulNumber(num);
     return result;
 }
-S21Matrix &S21Matrix::operator*=(const S21Matrix &other){
+
+S21Matrix &S21Matrix::operator*=(const S21Matrix &other) {
     MulMatrix(other);
     return (*this);
 }
-S21Matrix &S21Matrix::operator*=(double num){
+
+S21Matrix &S21Matrix::operator*=(double num) {
     MulNumber(num);
     return (*this);
 }
+
 S21Matrix operator*(double num, const S21Matrix &other) noexcept {
     S21Matrix result(other);
     result.MulNumber(num);

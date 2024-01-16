@@ -140,11 +140,28 @@ TEST(BaseFunctions, MulMatrixTest){
     example.MulMatrix(term);
     EXPECT_EQ(result.EqMatrix(example), true);
 }
+TEST(BaseFunctions, TransposeTest){
+        S21Matrix example( 3,3);
+        S21Matrix result(3,3);
+        S21Matrix current;
+        setMatrix3x3(example, summandFirst[0]);
+        setMatrix3x3(result, transposeResult);
+        current = example.Transpose();
+        EXPECT_EQ(result.EqMatrix(current), true);
+}
 
 TEST(BaseFunctions, MulMatrixOutOfRangeTest){
     S21Matrix example(3,3);
     S21Matrix term(5,4);
     EXPECT_THROW(example.MulMatrix(term), std::out_of_range);
+}
+
+TEST(MatrixOperations, Determinant) {
+    for (int i = 0; i < 3; i++) {
+        S21Matrix matrix(3, 3);
+        setMatrix3x3(matrix, val1[i]);
+        EXPECT_NEAR(matrix.Determinant(), determinantResult[i], 1E-5);
+    }
 }
 
 TEST(OverrideMethods, PlusUno){

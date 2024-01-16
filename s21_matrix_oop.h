@@ -16,7 +16,8 @@ public:
     void SubMatrix(const S21Matrix &other);//tested
     void MulNumber(double num); // tested
     void MulMatrix(const S21Matrix &other); //tested
-//    S21Matrix Transpose();
+    S21Matrix Transpose(); // tested
+    [[nodiscard]] double Determinant();
 
     double &operator()(int i, int j) const; // tested
     double &operator()(int i, int j); // override tested
@@ -56,7 +57,6 @@ private:
 
 S21Matrix Transpose()
 S21Matrix CalcComplements()
-double Determinant()
 S21Matrix InverseMatrix()
  set_rows();
  set_cols();
