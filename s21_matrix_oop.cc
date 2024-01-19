@@ -114,11 +114,12 @@ S21Matrix S21Matrix::Transpose() {
             return result;
         }
 
-        std::swap(matrix_[row], matrix_[pivot_row]);
 
-        if (row != pivot_row)
-            result*= -1;
 
+        if (row != pivot_row) {
+            std::swap(matrix_[row], matrix_[pivot_row]);
+            result *= -1;
+        }
         result *= matrix_[row][row];
 
         for (int next_col = row + 1; next_col < rows_; ++next_col)
