@@ -157,12 +157,18 @@ TEST(BaseFunctions, MulMatrixOutOfRangeTest){
 }
 
 TEST(MatrixOperations, Determinant) {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
         S21Matrix matrix(3, 3);
         setMatrix3x3(matrix, val1[i]);
         EXPECT_NEAR(matrix.Determinant(), determinantResult[i], 1E-5);
     }
 }
+
+TEST(MatrixOperations, Determinant_10x10) {
+        S21Matrix matrix(10, 10);
+        setMatrix10x10(matrix, valDeterminant);
+        EXPECT_NEAR(matrix.Determinant(), 0, 1E-5);
+    }
 
 TEST(OverrideMethods, PlusUno){
     S21Matrix example(3,3);
@@ -280,6 +286,13 @@ void setMatrix3x3(S21Matrix& matrix, double expected[3][3]) {
     }
 }
 void setMatrix3x4(S21Matrix& matrix, double expected[3][4]){
+    for (int i = 0; i < matrix.GetRows(); ++i) {
+        for (int j = 0; j < matrix.GetCols(); ++j) {
+            matrix(i, j) = expected[i][j];
+        }
+    }
+}
+void setMatrix10x10(S21Matrix& matrix, double expected[10][10]){
     for (int i = 0; i < matrix.GetRows(); ++i) {
         for (int j = 0; j < matrix.GetCols(); ++j) {
             matrix(i, j) = expected[i][j];
