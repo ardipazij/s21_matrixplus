@@ -10,6 +10,8 @@ public:
 
     [[nodiscard]] int GetRows() const; // tested
     [[nodiscard]] int GetCols() const; // tested
+    void SetRows(int rows);
+    void SetCols(int cols);
 
     bool EqMatrix(const S21Matrix &other); //tested
     void SumMatrix(const S21Matrix &other);//tested

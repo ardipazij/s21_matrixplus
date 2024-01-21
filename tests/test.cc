@@ -59,11 +59,26 @@ TEST(TestPrivateAccess, Accessors){
     EXPECT_EQ(example.GetCols(), 2);
 }
 
-//TEST(TestPrivateAccess, Mutators){
-//    S21Matrix example(1, 2);
-//    EXPECT_EQ(example.GetRows(), 1);
-//    EXPECT_EQ(example.GetCols(), 2);
-//}
+TEST(TestPrivateAccess, Mutators) {
+    int rows = 3, cols = 3;
+    S21Matrix matrix(rows, cols);
+    setMatrix3x3(matrix, val1[0]);
+    matrix.SetRows(10);
+    matrix.SetCols(2);
+    EXPECT_NE(matrix.GetRows(), rows);
+    EXPECT_NE(matrix.GetCols(), cols);
+    EXPECT_EQ(matrix(1,1), 4);
+    EXPECT_EQ(matrix(5 ,1), 0);
+
+}
+
+TEST(TestPrivateAccess, MutatorsInvailid) {
+    int rows = 3, cols = 3;
+    S21Matrix matrix(rows, cols);
+    EXPECT_THROW(matrix.SetCols(-4), std::out_of_range);
+    EXPECT_THROW(matrix.SetRows(-4), std::out_of_range);
+
+}
 
 TEST(BaseFunctions, EqualOutOfRange){
     S21Matrix example(3,3);

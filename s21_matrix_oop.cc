@@ -33,6 +33,37 @@ S21Matrix::~S21Matrix() { DestroyMatrix(); }
     return rows_;
 }
 
+void S21Matrix::SetRows(int rows){
+    if (rows_ <= 0) {
+        throw std::out_of_range("Incorrect matrix size");
+    }
+    S21Matrix temp(rows, cols_);
+    int maxRowsCount = rows;
+    if(rows > rows_) maxRowsCount = rows_;
+    for(int i {0}; i < maxRowsCount; ++i){
+        for(int j {0}; j < cols_; j++){
+            temp.matrix_[i][j] = matrix_[i][j];
+        }
+    }
+    (*this) = temp;
+
+}
+void S21Matrix::SetCols(int cols){
+    if (cols_ <= 0) {
+        throw std::out_of_range("Incorrect matrix size");
+    }
+    int maxColsCount = cols;
+    S21Matrix temp(rows_, cols);
+    if(cols > cols_) maxColsCount = cols_;
+    for(int i {0}; i < rows_; ++i){
+        for(int j {0}; j < maxColsCount; j++){
+            temp.matrix_[i][j] = matrix_[i][j];
+        }
+    }
+    (*this) = temp;
+
+}
+
 // base functions
 bool S21Matrix::EqMatrix(const S21Matrix &other) {
     if (NonEqualitySizeCheck(other)) {
