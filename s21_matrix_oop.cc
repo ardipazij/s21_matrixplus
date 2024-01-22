@@ -66,13 +66,12 @@ bool S21Matrix::EqMatrix(const S21Matrix &other) {
     bool result = true;
     for (int i = 0; i < rows_ && result; i++) {
         for (int j = 0; j < cols_ && result; j++) {
-            if (fabs(matrix_[i][j] - other(i, j)) > 1E-6) {
+            if (fabs(matrix_[i][j] - other(i, j)) > 1E-5) {
                 result = false;
             }
         }
     }
     return result;
-
 }
 
 void S21Matrix::SumMatrix(const S21Matrix &other) {
@@ -124,30 +123,64 @@ S21Matrix S21Matrix::Transpose() {
 }
 
 double S21Matrix::Determinant() {
-    if (rows_ != cols_) {
+    S21Matrix temp;
+    temp = (*this);
+    if (temp.rows_ != temp.cols_) {
         throw std::out_of_range("Size of rows and cols must be equal");
     }
     double result = 1;
-    for (int row{0}; row < rows_; ++row) {
+    for (int row{0}; row < temp.rows_; ++row) {
         int pivot_row = row;
-        for (int next_row{row + 1}; next_row < rows_; ++next_row) {
-            if (std::abs(matrix_[next_row][row]) > std::abs(matrix_[pivot_row][row])) pivot_row = next_row;
+        for (int next_row{row + 1}; next_row < temp.rows_; ++next_row) {
+            if (std::abs(temp.matrix_[next_row][row]) > std::abs(temp.matrix_[pivot_row][row])) pivot_row = next_row;
         }
-        if (std::abs(matrix_[pivot_row][row]) < 1E-11) {
+        if (std::abs(temp.matrix_[pivot_row][row]) < 1E-11) {
             result = 0;
             return result;
         }
         if (row != pivot_row) {
-            std::swap(matrix_[row], matrix_[pivot_row]);
+            std::swap(temp.matrix_[row], temp.matrix_[pivot_row]);
             result *= -1;
         }
-        result *= matrix_[row][row];
-        for (int next_col = row + 1; next_col < rows_; ++next_col)
-            matrix_[row][next_col] /= matrix_[row][row];
-        for (int other_row = 0; other_row < rows_; ++other_row)
-            if (other_row != row && std::abs(matrix_[other_row][row]) > 1E-5)
-                for (int next_col = row + 1; next_col < rows_; ++next_col)
-                    matrix_[other_row][next_col] -= matrix_[row][next_col] * matrix_[other_row][row];
+        result *= temp.matrix_[row][row];
+        for (int next_col = row + 1; next_col < temp.rows_; ++next_col)
+            temp.matrix_[row][next_col] /= temp.matrix_[row][row];
+        for (int other_row = 0; other_row < temp.rows_; ++other_row)
+            if (other_row != row && std::abs(temp.matrix_[other_row][row]) > 1E-5)
+                for (int next_col = row + 1; next_col < temp.rows_; ++next_col)
+                    temp.matrix_[other_row][next_col] -= temp.matrix_[row][next_col] * temp.matrix_[other_row][row];
+    }
+    return result;
+}
+
+S21Matrix S21Matrix::CalcComplements(){
+    if(rows_ != cols_){
+        throw std::out_of_range("Count of rows are not equal counts of cols");
+    }
+    S21Matrix result(rows_, cols_);
+    for(int i {0}; i < rows_; ++i){
+        for(int j {0}; j < cols_; ++j){
+            S21Matrix temp (rows_ - 1, cols_ - 1);
+            GetMinor(temp, i , j);
+            double determinant = temp.Determinant();
+            result(i,j) = std::pow(-1, i + j) * determinant;
+        }
+    }
+    return result;
+}
+
+S21Matrix S21Matrix::InverseMatrix(){
+    double det = Determinant();
+    if(det == 0){
+        throw std::out_of_range("Determinant is equal zero, inverse matrix doesnt exist");
+    }
+    S21Matrix result(rows_, cols_);
+    if (rows_ == 1) {
+        result.matrix_[0][0] = std::pow(matrix_[0][0], -1);
+    } else {
+        S21Matrix complements = CalcComplements();
+        result = complements.Transpose();
+        result.MulNumber(1 / det);
     }
     return result;
 }
@@ -281,5 +314,21 @@ void S21Matrix::CopyMatrix(const S21Matrix &other) {
     if (matrix_) {
         for (int i = 0; i < rows_; i++)
             for (int j = 0; j < cols_; j++) matrix_[i][j] = other.matrix_[i][j];
+    }
+}
+
+void S21Matrix::GetMinor(S21Matrix& temp, int ex_row, int ex_col) {
+    int i = 0, j = 0;
+    for (int row = 0; row < rows_; ++row) {
+        for (int col = 0; col < cols_; ++col) {
+            if (row != ex_row && col != ex_col) {
+                temp(i, j) = matrix_[row][col];
+                j++;
+                if (j == cols_ - 1) {
+                    j = 0;
+                    i++;
+                }
+            }
+        }
     }
 }

@@ -19,7 +19,9 @@ public:
     void MulNumber(double num); // tested
     void MulMatrix(const S21Matrix &other); //tested
     S21Matrix Transpose(); // tested
-    double Determinant();
+    double Determinant(); // tested
+    S21Matrix CalcComplements();
+    S21Matrix InverseMatrix();
 
     double &operator()(int i, int j) const; // tested
     double &operator()(int i, int j); // override tested
@@ -52,6 +54,8 @@ private:
     bool NonEqualitySizeCheck(const S21Matrix &other);
 
     void CopyMatrix(const S21Matrix &other);
+
+    void GetMinor(S21Matrix& temp, int ex_row, int ex_col);
 };
 
 #endif
