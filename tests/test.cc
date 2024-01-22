@@ -106,7 +106,7 @@ TEST(BaseFunctions, SumOutOfRange){
 }
 
 TEST(BaseFunctions, SumDefaultTest){
-    for(int i = 0; i < 2; ++i){
+    for(int i = 0; i < 5; ++i){
         S21Matrix example(3,3);
         S21Matrix summand(3,3);
         S21Matrix result(3,3);
@@ -171,19 +171,24 @@ TEST(BaseFunctions, MulMatrixOutOfRangeTest){
     EXPECT_THROW(example.MulMatrix(term), std::out_of_range);
 }
 
-TEST(MatrixOperations, Determinant) {
-    for (int i = 0; i < 2; i++) {
+TEST(BaseFunctions, Determinant) {
+    for (int i = 0; i < 5; i++) {
         S21Matrix matrix(3, 3);
         setMatrix3x3(matrix, val1[i]);
-        EXPECT_NEAR(matrix.Determinant(), determinantResult[i], 1E-5);
+        EXPECT_NEAR(matrix.Determinant(), determinantResult[i], 1E-11);
     }
 }
 
-TEST(MatrixOperations, Determinant_10x10) {
+TEST(BaseFunctions, Determinant_10x10) {
         S21Matrix matrix(10, 10);
         setMatrix10x10(matrix, valDeterminant);
         EXPECT_NEAR(matrix.Determinant(), 0, 1E-5);
-    }
+}
+
+TEST(BaseFunctions, DeterminantOutOfRange) {
+    S21Matrix matrix(3, 4);
+    EXPECT_THROW(matrix.Determinant(),std::out_of_range);
+}
 
 TEST(OverrideMethods, PlusUno){
     S21Matrix example(3,3);

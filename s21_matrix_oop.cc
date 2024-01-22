@@ -34,9 +34,6 @@ S21Matrix::~S21Matrix() { DestroyMatrix(); }
 }
 
 void S21Matrix::SetRows(int rows){
-    if (rows_ <= 0) {
-        throw std::out_of_range("Incorrect matrix size");
-    }
     S21Matrix temp(rows, cols_);
     int maxRowsCount = rows;
     if(rows > rows_) maxRowsCount = rows_;
@@ -49,11 +46,8 @@ void S21Matrix::SetRows(int rows){
 
 }
 void S21Matrix::SetCols(int cols){
-    if (cols_ <= 0) {
-        throw std::out_of_range("Incorrect matrix size");
-    }
-    int maxColsCount = cols;
     S21Matrix temp(rows_, cols);
+    int maxColsCount = cols;
     if(cols > cols_) maxColsCount = cols_;
     for(int i {0}; i < rows_; ++i){
         for(int j {0}; j < maxColsCount; j++){
@@ -129,7 +123,7 @@ S21Matrix S21Matrix::Transpose() {
     return result;
 }
 
-[[nodiscard]] double S21Matrix::Determinant() {
+double S21Matrix::Determinant() {
     if (rows_ != cols_) {
         throw std::out_of_range("Size of rows and cols must be equal");
     }
@@ -138,26 +132,20 @@ S21Matrix S21Matrix::Transpose() {
         int pivot_row = row;
         for (int next_row{row + 1}; next_row < rows_; ++next_row) {
             if (std::abs(matrix_[next_row][row]) > std::abs(matrix_[pivot_row][row])) pivot_row = next_row;
-
         }
         if (std::abs(matrix_[pivot_row][row]) < 1E-11) {
             result = 0;
             return result;
         }
-
-
-
         if (row != pivot_row) {
             std::swap(matrix_[row], matrix_[pivot_row]);
             result *= -1;
         }
         result *= matrix_[row][row];
-
         for (int next_col = row + 1; next_col < rows_; ++next_col)
             matrix_[row][next_col] /= matrix_[row][row];
-
         for (int other_row = 0; other_row < rows_; ++other_row)
-            if (other_row != row && abs(matrix_[other_row][row]) > 1E-11)
+            if (other_row != row && std::abs(matrix_[other_row][row]) > 1E-5)
                 for (int next_col = row + 1; next_col < rows_; ++next_col)
                     matrix_[other_row][next_col] -= matrix_[row][next_col] * matrix_[other_row][row];
     }
@@ -166,8 +154,8 @@ S21Matrix S21Matrix::Transpose() {
 
 //override methods
 double &S21Matrix::operator()(int i, int j) const {
-    if (i < 0 || j < 0 || i > rows_ - 1 || j > cols_ - 1)
-        throw std::out_of_range("Incorrect matrix's index");
+//    if (i < 0 || j < 0 || i > rows_ - 1 || j > cols_ - 1)
+//        throw std::out_of_range("Incorrect matrix's index");
     return matrix_[i][j];
 }
 
