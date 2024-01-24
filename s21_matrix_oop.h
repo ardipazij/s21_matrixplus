@@ -20,8 +20,8 @@ public:
     void MulMatrix(const S21Matrix &other); //tested
     S21Matrix Transpose(); // tested
     double Determinant(); // tested
-    S21Matrix CalcComplements();
-    S21Matrix InverseMatrix();
+    S21Matrix CalcComplements(); // tested
+    S21Matrix InverseMatrix(); // tested
 
     double &operator()(int i, int j) const; // tested
     double &operator()(int i, int j); // override tested
@@ -51,7 +51,7 @@ private:
 
     void Arithmetic(const S21Matrix &other, int sign);
 
-    bool NonEqualitySizeCheck(const S21Matrix &other);
+    [[nodiscard]] bool NonEqualitySizeCheck(const S21Matrix &other) const;
 
     void CopyMatrix(const S21Matrix &other);
 

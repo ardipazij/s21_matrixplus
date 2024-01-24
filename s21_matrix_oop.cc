@@ -306,7 +306,7 @@ void S21Matrix::Arithmetic(const S21Matrix &other, int sign) {
     }
 }
 
-bool S21Matrix::NonEqualitySizeCheck(const S21Matrix &other) {
+[[nodiscard]] bool S21Matrix::NonEqualitySizeCheck(const S21Matrix &other) const {
     return (rows_ != other.GetRows() || cols_ != other.GetCols());
 }
 
