@@ -4,13 +4,13 @@
 #include <gtest/gtest.h>
 #include "../s21_matrix_oop.h"
 
-void setMatrix3x3(S21Matrix &matrix, double expected[3][3]);
+void SetMatrix3x3(S21Matrix &matrix, double expected[3][3]);
 
-void setMatrix3x4(S21Matrix &matrix, double expected[3][4]);
+void SetMatrix3x4(S21Matrix &matrix, double expected[3][4]);
 
-void setMatrix10x10(S21Matrix &matrix, double expected[10][10]);
+void SetMatrix10x10(S21Matrix &matrix, double expected[10][10]);
 
-void compareForInverse(S21Matrix matrix, double result[3][3]);
+void CompareForInverse(S21Matrix matrix, double result[3][3]);
 
 static double summandFirst[2][3][3] = {{{1, 2, 3}, {0, 4, 5}, {0, 0, 6}},
                                        {{1, 0, 0}, {2, 0, 0}, {3, 4, 1}}};

@@ -186,8 +186,6 @@ S21Matrix S21Matrix::InverseMatrix() {
 
 // Override methods
 double &S21Matrix::operator()(int i, int j) const {
-    if (i < 0 || j < 0 || i > rows_ - 1 || j > cols_ - 1)
-        throw std::out_of_range("Incorrect matrix's index");
     return matrix_[i][j];
 }
 
@@ -276,7 +274,7 @@ S21Matrix operator*(double num, const S21Matrix &other) noexcept {
 // Helpers
 void S21Matrix::MemoryAllocation() {
     matrix_ = new double *[rows_]{};
-    for (int i = 0; i < rows_; i++) {
+    for (int i = 0; i < rows_; ++i) {
         matrix_[i] = new double[cols_]{};
     }
 }
@@ -297,8 +295,8 @@ void S21Matrix::DestroyMatrix() {
 }
 
 void S21Matrix::Arithmetic(const S21Matrix &other, int sign) {
-    for (int i = 0; i < rows_; i++) {
-        for (int j = 0; j < cols_; j++) {
+    for (int i = 0; i < rows_; ++i) {
+        for (int j = 0; j < cols_; ++j) {
             matrix_[i][j] = matrix_[i][j] + sign * other(i, j);
         }
     }

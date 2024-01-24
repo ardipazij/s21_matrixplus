@@ -62,7 +62,7 @@ TEST(TestPrivateAccess, Accessors) {
 TEST(TestPrivateAccess, Mutators) {
     int rows = 3, cols = 3;
     S21Matrix matrix(rows, cols);
-    setMatrix3x3(matrix, val1[0]);
+    SetMatrix3x3(matrix, val1[0]);
     matrix.SetRows(10);
     matrix.SetCols(2);
     EXPECT_NE(matrix.GetRows(), rows);
@@ -110,9 +110,9 @@ TEST(BaseFunctions, SumDefaultTest) {
         S21Matrix example(3, 3);
         S21Matrix summand(3, 3);
         S21Matrix result(3, 3);
-        setMatrix3x3(example, summandFirst[i]);
-        setMatrix3x3(summand, summandSecond[i]);
-        setMatrix3x3(result, sumResult[i]);
+        SetMatrix3x3(example, summandFirst[i]);
+        SetMatrix3x3(summand, summandSecond[i]);
+        SetMatrix3x3(result, sumResult[i]);
         example.SumMatrix(summand);
         EXPECT_EQ(result.EqMatrix(example), compareSumResult[i]);
     }
@@ -130,9 +130,9 @@ TEST(BaseFunctions, SubDefaultTest) {
         S21Matrix example(3, 3);
         S21Matrix term(3, 3);
         S21Matrix result(3, 3);
-        setMatrix3x3(example, minuend[i]);
-        setMatrix3x3(term, subtrahend[i]);
-        setMatrix3x3(result, subResult[i]);
+        SetMatrix3x3(example, minuend[i]);
+        SetMatrix3x3(term, subtrahend[i]);
+        SetMatrix3x3(result, subResult[i]);
         example.SubMatrix(term);
         EXPECT_EQ(result.EqMatrix(example), compareSubResult[i]);
     }
@@ -149,9 +149,9 @@ TEST(BaseFunctions, MulMatrixTest) {
     S21Matrix example(3, 3);
     S21Matrix term(3, 4);
     S21Matrix result(3, 4);
-    setMatrix3x3(example, mulMatrixFirstValue);
-    setMatrix3x4(term, mulMatrixSecondValue);
-    setMatrix3x4(result, mulMatrixResult);
+    SetMatrix3x3(example, mulMatrixFirstValue);
+    SetMatrix3x4(term, mulMatrixSecondValue);
+    SetMatrix3x4(result, mulMatrixResult);
     example.MulMatrix(term);
     EXPECT_EQ(result.EqMatrix(example), true);
 }
@@ -160,8 +160,8 @@ TEST(BaseFunctions, TransposeTest) {
     S21Matrix example(3, 3);
     S21Matrix result(3, 3);
     S21Matrix current;
-    setMatrix3x3(example, summandFirst[0]);
-    setMatrix3x3(result, transposeResult);
+    SetMatrix3x3(example, summandFirst[0]);
+    SetMatrix3x3(result, transposeResult);
     current = example.Transpose();
     EXPECT_EQ(result.EqMatrix(current), true);
 }
@@ -175,14 +175,14 @@ TEST(BaseFunctions, MulMatrixOutOfRangeTest) {
 TEST(BaseFunctions, Determinant) {
     for (int i = 0; i < 5; i++) {
         S21Matrix matrix(3, 3);
-        setMatrix3x3(matrix, val1[i]);
+        SetMatrix3x3(matrix, val1[i]);
         EXPECT_NEAR(matrix.Determinant(), determinantResult[i], 1E-11);
     }
 }
 
 TEST(BaseFunctions, Determinant_10x10) {
     S21Matrix matrix(10, 10);
-    setMatrix10x10(matrix, valDeterminant);
+    SetMatrix10x10(matrix, valDeterminant);
     EXPECT_NEAR(matrix.Determinant(), 0, 1E-5);
 }
 
@@ -194,8 +194,8 @@ TEST(BaseFunctions, DeterminantOutOfRange) {
 TEST(BaseFunctions, CalcCompl) {
     for (int i{0}; i < 5; ++i) {
         S21Matrix matrix(3, 3), result(3, 3), checkResult(3, 3);
-        setMatrix3x3(matrix, val1[i]);
-        setMatrix3x3(checkResult, calcComplementsResults[i]);
+        SetMatrix3x3(matrix, val1[i]);
+        SetMatrix3x3(checkResult, calcComplementsResults[i]);
         result = matrix.CalcComplements();
         EXPECT_EQ(checkResult.EqMatrix(result), 1);
     }
@@ -207,14 +207,14 @@ TEST(BaseFunctions, CalcComplOutOfRange) {
 }
 
 TEST(BaseFunctions, Inverse) {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; ++i) {
         S21Matrix matrix(3, 3);
-        setMatrix3x3(matrix, val1[i]);
+        SetMatrix3x3(matrix, val1[i]);
         if (i == 1) {
             EXPECT_THROW(matrix.InverseMatrix(), std::out_of_range);
         } else {
             matrix = matrix.InverseMatrix();
-            compareForInverse(matrix, inverseResults[i]);
+            CompareForInverse(matrix, inverseResults[i]);
         }
     }
 }
@@ -228,9 +228,9 @@ TEST(OverrideMethods, PlusUno) {
     S21Matrix example(3, 3);
     S21Matrix summand(3, 3);
     S21Matrix result(3, 3);
-    setMatrix3x3(example, summandFirst[0]);
-    setMatrix3x3(summand, summandSecond[0]);
-    setMatrix3x3(result, sumResult[0]);
+    SetMatrix3x3(example, summandFirst[0]);
+    SetMatrix3x3(summand, summandSecond[0]);
+    SetMatrix3x3(result, sumResult[0]);
     example += summand;
     EXPECT_EQ(example.EqMatrix(result), compareSumResult[0]);
 }
@@ -239,9 +239,9 @@ TEST(OverrideMethods, MinusUno) {
     S21Matrix example(3, 3);
     S21Matrix summand(3, 3);
     S21Matrix result(3, 3);
-    setMatrix3x3(example, minuend[0]);
-    setMatrix3x3(summand, subtrahend[0]);
-    setMatrix3x3(result, subResult[0]);
+    SetMatrix3x3(example, minuend[0]);
+    SetMatrix3x3(summand, subtrahend[0]);
+    SetMatrix3x3(result, subResult[0]);
     example -= summand;
     EXPECT_EQ(example.EqMatrix(result), compareSubResult[0]);
 }
@@ -264,9 +264,9 @@ TEST(OverrideMethods, PlusBiAndEqualToMovedConstructor) {
     S21Matrix summand(3, 3);
     S21Matrix result(3, 3);
     S21Matrix res;
-    setMatrix3x3(example, summandFirst[0]);
-    setMatrix3x3(summand, summandSecond[0]);
-    setMatrix3x3(result, sumResult[0]);
+    SetMatrix3x3(example, summandFirst[0]);
+    SetMatrix3x3(summand, summandSecond[0]);
+    SetMatrix3x3(result, sumResult[0]);
     res = summand + example;
     EXPECT_EQ(res == result, compareSumResult[0]);
 }
@@ -276,9 +276,9 @@ TEST(OverrideMethods, MinusBiAndEqualToMovedConstructor) {
     S21Matrix summand(3, 3);
     S21Matrix result(3, 3);
     S21Matrix res;
-    setMatrix3x3(example, minuend[0]);
-    setMatrix3x3(summand, subtrahend[0]);
-    setMatrix3x3(result, subResult[0]);
+    SetMatrix3x3(example, minuend[0]);
+    SetMatrix3x3(summand, subtrahend[0]);
+    SetMatrix3x3(result, subResult[0]);
     res = example - summand;
     EXPECT_EQ(res == result, compareSubResult[0]);
 }
@@ -286,7 +286,7 @@ TEST(OverrideMethods, MinusBiAndEqualToMovedConstructor) {
 TEST(OverrideMethods, EqualToCopyConstructor) {
     S21Matrix example(3, 3);
     S21Matrix res;
-    setMatrix3x3(example, minuend[0]);
+    SetMatrix3x3(example, minuend[0]);
     res = example;
     EXPECT_EQ(res == example, 1);
 }
@@ -296,9 +296,9 @@ TEST(OverrideMethods, MulMatrixUno) {
     S21Matrix term(3, 4);
     S21Matrix result(3, 4);
     S21Matrix answer;
-    setMatrix3x3(example, mulMatrixFirstValue);
-    setMatrix3x4(term, mulMatrixSecondValue);
-    setMatrix3x4(result, mulMatrixResult);
+    SetMatrix3x3(example, mulMatrixFirstValue);
+    SetMatrix3x4(term, mulMatrixSecondValue);
+    SetMatrix3x4(result, mulMatrixResult);
     answer = example * term;
     EXPECT_EQ(answer.EqMatrix(result), true);
 }
@@ -307,9 +307,9 @@ TEST(OverrideMethods, MulMatrixMono) {
     S21Matrix example(3, 3);
     S21Matrix term(3, 4);
     S21Matrix result(3, 4);
-    setMatrix3x3(example, mulMatrixFirstValue);
-    setMatrix3x4(term, mulMatrixSecondValue);
-    setMatrix3x4(result, mulMatrixResult);
+    SetMatrix3x3(example, mulMatrixFirstValue);
+    SetMatrix3x4(term, mulMatrixSecondValue);
+    SetMatrix3x4(result, mulMatrixResult);
     example *= term;
     EXPECT_EQ(example.EqMatrix(result), true);
 }
@@ -335,7 +335,7 @@ TEST(OverrideMethods, MulNumberMono) {
     EXPECT_EQ(example(0, 0), 20);
 }
 
-void setMatrix3x3(S21Matrix &matrix, double expected[3][3]) {
+void SetMatrix3x3(S21Matrix &matrix, double expected[3][3]) {
     for (int i = 0; i < matrix.GetRows(); ++i) {
         for (int j = 0; j < matrix.GetCols(); ++j) {
             matrix(i, j) = expected[i][j];
@@ -343,7 +343,7 @@ void setMatrix3x3(S21Matrix &matrix, double expected[3][3]) {
     }
 }
 
-void setMatrix3x4(S21Matrix &matrix, double expected[3][4]) {
+void SetMatrix3x4(S21Matrix &matrix, double expected[3][4]) {
     for (int i = 0; i < matrix.GetRows(); ++i) {
         for (int j = 0; j < matrix.GetCols(); ++j) {
             matrix(i, j) = expected[i][j];
@@ -351,7 +351,7 @@ void setMatrix3x4(S21Matrix &matrix, double expected[3][4]) {
     }
 }
 
-void setMatrix10x10(S21Matrix &matrix, double expected[10][10]) {
+void SetMatrix10x10(S21Matrix &matrix, double expected[10][10]) {
     for (int i = 0; i < matrix.GetRows(); ++i) {
         for (int j = 0; j < matrix.GetCols(); ++j) {
             matrix(i, j) = expected[i][j];
@@ -364,7 +364,7 @@ int main(int argc, char **argv) {
     return RUN_ALL_TESTS();
 }
 
-void compareForInverse(S21Matrix matrix, double result[3][3]) {
+void CompareForInverse(S21Matrix matrix, double result[3][3]) {
     for (int i{0}; i < matrix.GetRows(); ++i) {
         for (int j{0}; j < matrix.GetCols(); ++j) {
             EXPECT_NEAR(matrix(i, j), result[i][j], 1E-5);
