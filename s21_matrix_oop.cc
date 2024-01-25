@@ -3,7 +3,7 @@
 #include <cmath>
 
 // Constructor and destructor
-S21Matrix::S21Matrix() {}
+S21Matrix::S21Matrix() = default;
 
 S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
     if (rows_ <= 0 || cols_ <= 0) {
@@ -34,54 +34,37 @@ S21Matrix::~S21Matrix() { DestroyMatrix(); }
 }
 
 void S21Matrix::SetRows(int rows) {
-    S21Matrix temp(rows, cols_);
-    int max_rows_count = rows;
-    if (rows > rows_) max_rows_count = rows_;
-    for (int i{0}; i < max_rows_count; ++i) {
-        for (int j{0}; j < cols_; ++j) {
-            temp.matrix_[i][j] = matrix_[i][j];
-        }
-    }
-    (*this) = temp;
+    ChangeMatrixSize(rows, cols_);
 }
 
 void S21Matrix::SetCols(int cols) {
-    S21Matrix temp(rows_, cols);
-    int max_cols_count = cols;
-    if (cols > cols_) max_cols_count = cols_;
-    for (int i{0}; i < rows_; ++i) {
-        for (int j{0}; j < max_cols_count; ++j) {
-            temp.matrix_[i][j] = matrix_[i][j];
-        }
-    }
-    (*this) = temp;
+    ChangeMatrixSize(rows_, cols);
 }
 
 // Base functions
 bool S21Matrix::EqMatrix(const S21Matrix &other) {
-    if (NonEqualitySizeCheck(other)) {
+    if (isNonEqualitySizeCheck(other)) {
         throw std::out_of_range("Different matrix size, eq_error");
     }
-    bool result = true;
-    for (int i = 0; i < rows_ && result; ++i) {
-        for (int j = 0; j < cols_ && result; ++j) {
+    for (int i = 0; i < rows_; ++i) {
+        for (int j = 0; j < cols_; ++j) {
             if (std::fabs(matrix_[i][j] - other(i, j)) > 1E-5) {
-                result = false;
+                return false;
             }
         }
     }
-    return result;
+    return true;
 }
 
 void S21Matrix::SumMatrix(const S21Matrix &other) {
-    if (NonEqualitySizeCheck(other)) {
+    if (isNonEqualitySizeCheck(other)) {
         throw std::out_of_range("Different matrix size, sum_error");
     }
     Arithmetic(other, 1);
 }
 
 void S21Matrix::SubMatrix(const S21Matrix &other) {
-    if (NonEqualitySizeCheck(other)) {
+    if (isNonEqualitySizeCheck(other)) {
         throw std::out_of_range("Different matrix size, sub_error");
     }
     Arithmetic(other, -1);
@@ -127,6 +110,7 @@ double S21Matrix::Determinant() {
     if (temp.rows_ != temp.cols_) {
         throw std::out_of_range("Size of rows and cols must be equal");
     }
+    if(rows_ == 1) return matrix_[0][0];
     double result = 1;
     for (int row{0}; row < temp.rows_; ++row) {
         int pivot_row = row;
@@ -274,8 +258,10 @@ S21Matrix operator*(double num, const S21Matrix &other) noexcept {
 // Helpers
 void S21Matrix::MemoryAllocation() {
     matrix_ = new double *[rows_]{};
+    if(!matrix_) throw std::out_of_range("Memory is dont allocate");
     for (int i = 0; i < rows_; ++i) {
         matrix_[i] = new double[cols_]{};
+        if(!matrix_[i]) throw std::out_of_range("Memory is dont allocate");
     }
 }
 
@@ -302,7 +288,7 @@ void S21Matrix::Arithmetic(const S21Matrix &other, int sign) {
     }
 }
 
-[[nodiscard]] bool S21Matrix::NonEqualitySizeCheck(const S21Matrix &other) const {
+[[nodiscard]] bool S21Matrix::isNonEqualitySizeCheck(const S21Matrix &other) const {
     return (rows_ != other.GetRows() || cols_ != other.GetCols());
 }
 
@@ -327,4 +313,17 @@ void S21Matrix::GetMinor(S21Matrix &temp, int ex_row, int ex_col) {
             }
         }
     }
+}
+
+void S21Matrix::ChangeMatrixSize(int new_rows, int new_cols){
+    S21Matrix temp(new_rows, new_cols);
+    int max_rows_count = new_rows, max_cols_count = new_cols;
+    if (new_rows > rows_) max_rows_count = rows_;
+    if (new_cols > cols_) max_cols_count = cols_;
+    for (int i{0}; i < max_rows_count; ++i) {
+        for (int j{0}; j < max_cols_count; ++j) {
+            temp.matrix_[i][j] = matrix_[i][j];
+        }
+    }
+    (*this) = temp;
 }

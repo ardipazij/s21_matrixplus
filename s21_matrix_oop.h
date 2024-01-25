@@ -7,6 +7,7 @@ public:
     S21Matrix(int rows, int cols); // tested
     S21Matrix(const S21Matrix &other); // tested
     S21Matrix(S21Matrix &&other) noexcept; // tested
+    ~S21Matrix(); // tested
 
     [[nodiscard]] int GetRows() const; // tested
     [[nodiscard]] int GetCols() const; // tested
@@ -38,18 +39,18 @@ public:
     S21Matrix &operator*=(double num); // tested
     friend S21Matrix operator*(double num, const S21Matrix &other) noexcept; // tested
 
-    ~S21Matrix(); // tested
 private:
-    int rows_ = 0, cols_ = 0;
-    double **matrix_ = nullptr;
-
     void DestroyMatrix();
     void MemoryAllocation();
     void Blank();
     void Arithmetic(const S21Matrix &other, int sign);
-    [[nodiscard]] bool NonEqualitySizeCheck(const S21Matrix &other) const;
+    [[nodiscard]] bool isNonEqualitySizeCheck(const S21Matrix &other) const;
     void CopyMatrix(const S21Matrix &other);
     void GetMinor(S21Matrix &temp, int ex_row, int ex_col);
+    void ChangeMatrixSize(int new_rows, int new_cols);
+
+    int rows_ = 0, cols_ = 0;
+    double **matrix_ = nullptr;
 };
 
 #endif
