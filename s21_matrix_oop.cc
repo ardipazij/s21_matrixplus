@@ -294,8 +294,8 @@ void S21Matrix::Arithmetic(const S21Matrix &other, int sign) {
 
 void S21Matrix::CopyMatrix(const S21Matrix &other) {
     if (matrix_) {
-        for (int i = 0; i < rows_; i++)
-            for (int j = 0; j < cols_; j++) matrix_[i][j] = other.matrix_[i][j];
+        for (int i = 0; i < rows_; ++i)
+            for (int j = 0; j < cols_; ++j) matrix_[i][j] = other.matrix_[i][j];
     }
 }
 
