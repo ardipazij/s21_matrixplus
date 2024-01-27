@@ -1,3 +1,5 @@
+- Makefile is provide for building the library and tests (with targets all, clean, test, s21_matrix_oop.a)
+
 ### Destructor and constructors
 | Method | Description |
 | ----------- | ----------- |
@@ -33,4 +35,3 @@
 | `*=`  | Multiplication assignment (`MulMatrix`/`MulNumber`) | the number of columns of the first matrix does not equal the number of rows of the second matrix |
 | `(int i, int j)`  | Indexation by matrix elements (row, column) | index is outside the matrix |
 
-- Makefile is provide for building the library and tests (with targets all, clean, test, s21_matrix_oop.a)
