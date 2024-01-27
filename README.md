@@ -1,3 +1,4 @@
+### Destructor and constructors
 | Method | Description |
 | ----------- | ----------- |
 | `S21Matrix()` | A basic constructor that initialises a matrix of some predefined dimension |  
@@ -6,7 +7,7 @@
 | `S21Matrix(S21Matrix&& other)` | Move constructor |
 | `~S21Matrix()` | Destructor |
 
-
+### Base functions
 | Operation | Description | Exceptional situations |
 | ----------- | ----------- | ----------- |
 | `bool EqMatrix(const S21Matrix& other)` | Checks matrices for equality with each other |  |
@@ -19,6 +20,7 @@
 | `double Determinant()` | Calculates and returns the determinant of the current matrix | the matrix is not square |
 | `S21Matrix InverseMatrix()` | Calculates and returns the inverse matrix | matrix determinant is 0 |
 
+### Override operators
 | Operator | Description | Exceptional situations |
 | ----------- | ----------- | ----------- |
 | `+`      | Addition of two matrices | different matrix dimensions |
